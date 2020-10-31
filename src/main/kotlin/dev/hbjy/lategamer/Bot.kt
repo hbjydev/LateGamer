@@ -2,30 +2,26 @@ package dev.hbjy.lategamer
 
 import com.gitlab.kordlib.gateway.Intent
 import com.gitlab.kordlib.kordx.emoji.Emojis
+import dev.hbjy.lategamer.services.PersistentData
+import dev.hbjy.lategamer.data.BotConfiguration
 import me.jakejmattson.discordkt.api.dsl.bot
 import me.jakejmattson.discordkt.api.extensions.addField
-import me.jakejmattson.discordkt.api.extensions.profileLink
 import java.awt.Color
-import kotlin.system.exitProcess
 
 suspend fun main(args: Array<String>) {
     val token = System.getenv("DISCORD_TOKEN")
-    if (token == null) {
-        System.err.println("Please include a Discord token in the DISCORD_TOKEN environment variable.")
-        exitProcess(1)
-    }
+    require(token !== null) { "Expected DISCORD_TOKEN to be a valid Discord Token string." }
 
     bot(token) {
-        prefix { "lg!" }
+        prefix {
+            val persistentData = discord.getInjectionObjects(PersistentData::class)
+            guild?.let { persistentData.getGuildProperty(it) { prefix } } ?: "++"
+        }
 
         configure {
-            allowMentionPrefix = LateGamer.Misc.allowMentionPrefix
-
+            allowMentionPrefix = true
             generateCommandDocs = false
-            showStartupLog = true
-            recommendCommands = true
-            commandReaction = Emojis.videoGame
-
+            commandReaction = null
             theme = Color(0x131142)
         }
 
@@ -44,10 +40,6 @@ suspend fun main(args: Array<String>) {
             }
 
             addField("Prefix", it.prefix())
-        }
-
-        intents {
-            +Intent.GuildMessages
         }
     }
 }
