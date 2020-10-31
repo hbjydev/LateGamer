@@ -1,9 +1,6 @@
 package dev.hbjy.lategamer
 
-import com.gitlab.kordlib.gateway.Intent
-import com.gitlab.kordlib.kordx.emoji.Emojis
 import dev.hbjy.lategamer.services.PersistentData
-import dev.hbjy.lategamer.data.BotConfiguration
 import me.jakejmattson.discordkt.api.dsl.bot
 import me.jakejmattson.discordkt.api.extensions.addField
 import java.awt.Color
