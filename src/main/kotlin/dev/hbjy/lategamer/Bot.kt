@@ -1,11 +1,14 @@
 package dev.hbjy.lategamer
 
+import com.gitlab.kordlib.gateway.Intent
+import com.gitlab.kordlib.gateway.PrivilegedIntent
+import dev.hbjy.lategamer.services.PermissionService
 import dev.hbjy.lategamer.services.PersistentData
 import me.jakejmattson.discordkt.api.dsl.bot
 import me.jakejmattson.discordkt.api.extensions.addField
-import java.awt.Color
 
-suspend fun main(args: Array<String>) {
+@OptIn(PrivilegedIntent::class)
+suspend fun main() {
     val token = System.getenv("DISCORD_TOKEN")
     require(token !== null) { "Expected DISCORD_TOKEN to be a valid Discord Token string." }
 
@@ -19,7 +22,7 @@ suspend fun main(args: Array<String>) {
             allowMentionPrefix = true
             generateCommandDocs = false
             commandReaction = null
-            theme = Color(0x131142)
+            // theme = Color(0x131142)
         }
 
         mentionEmbed {
@@ -37,6 +40,21 @@ suspend fun main(args: Array<String>) {
             }
 
             addField("Prefix", it.prefix())
+        }
+
+        permissions {
+            val permissionService = discord.getInjectionObjects(PermissionService::class)
+
+            if (guild != null) {
+                permissionService.isCommandVisible(guild!!, user, command)
+            } else {
+                false
+            }
+        }
+
+        intents {
+            +Intent.GuildMessages
+            +Intent.GuildMembers
         }
     }
 }

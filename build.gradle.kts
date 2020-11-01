@@ -13,6 +13,7 @@ repositories {
 dependencies {
     implementation(Dependencies.discordkt)
     implementation(Dependencies.gson)
+    implementation(Dependencies.joda)
 }
 
 tasks {

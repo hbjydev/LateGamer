@@ -37,9 +37,10 @@ class PersistentData(private val configuration: Configuration,
         }
 
         configuration.guildConfigurations.add(GuildConfiguration(guildId, botConfiguration.prefix))
+        configuration.save()
 
         return configuration.guildConfigurations.first { it.guildId == guildId }
     }
 
-    private fun getGuildConfig(guild: Guild) = configuration.guildConfigurations.first { it.guildId == guild.id.value }
+    private fun getGuildConfig(guild: Guild) = getGuildConfig(guild.id.value)
 }
